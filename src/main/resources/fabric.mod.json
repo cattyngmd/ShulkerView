@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "shulker-view",
+  "version": "${version}",
+  "name": "ShulkerView",
+  "description": "Mod that improves shulker management.",
+  "authors": [
+    "cattyn"
+  ],
+  "contact": {
+    "repo": "https://github.com/cattyn/ShulkerView"
+  },
+  "license": "All-Rights-Reserved",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "dev.cattyn.shulkerview.ShulkerViewEntrypoint"
+    ],
+    "main": [
+      "dev.cattyn.shulkerview.ShulkerViewEntrypoint"
+    ],
+    "modmenu": [
+      "dev.cattyn.shulkerview.config.ModMenuIntegration"
+    ]
+  },
+  "mixins": [
+    "shulker-view.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "minecraft": "${minecraft_version}"
+  }
+}

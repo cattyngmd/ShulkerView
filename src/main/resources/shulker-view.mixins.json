@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "dev.cattyn.shulkerview.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+  ],
+  "client": [
+    "MixinHandledScreen"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
