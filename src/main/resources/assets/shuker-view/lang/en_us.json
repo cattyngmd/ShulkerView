@@ -1,5 +1,6 @@
 {
   "text.autoconfig.shulker-view.title": "Shulker View",
   "text.autoconfig.shulker-view.option.compact": "Compact Layout",
-  "text.autoconfig.shulker-view.option.background": "Background Color"
+  "text.autoconfig.shulker-view.option.background": "Background Color",
+  "modmenu.descriptionTranslation.iris": "Mod that improves shulker management."
 }
