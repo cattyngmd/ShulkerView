@@ -9,13 +9,8 @@ import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.math.MathHelper;
 import org.joml.Vector2d;
 
-
-import java.util.ArrayDeque;
-import java.util.Queue;
-
 public class RenderHandler implements Globals {
     private final Vector2d clicked = new Vector2d();
-    private final Queue<Runnable> renderQueue = new ArrayDeque<>();
     private int height, offset;
 
     public void render(DrawContext context, double mouseX, double mouseY) {
@@ -28,34 +23,31 @@ public class RenderHandler implements Globals {
                     x = 2;
                     y += 18;
                 }
-                int finalX = x, finalY = y;
-                renderQueue.add(() -> {
-                    context.drawItem(stack, finalX + 2, finalY);
-                    if (stack.getCount() > 999) {
-                        context.drawItemInSlot(mc.textRenderer, stack, finalX + 2, finalY,  "%.1fk".formatted(stack.getCount() / 1000f));
-                    } else {
-                        context.drawItemInSlot(mc.textRenderer, stack, finalX + 2, finalY);
-                    }
-                });
+                context.drawItem(stack, x + 2, y);
+                if (stack.getCount() > 999) {
+                    String text = "%.1fk".formatted(stack.getCount() / 1000f);
+                    context.drawItemInSlot(mc.textRenderer, stack, x + 2, y, text);
+                } else {
+                    context.drawItemInSlot(mc.textRenderer, stack, x + 2, y);
+                }
                 x += 20;
                 count++;
                 if (x > maxX) maxX = x;
+            }
+            if (count == 0 && shulkerInfo.compact()) {
+                context.drawItem(shulkerInfo.shulker(), x + 2, y + 1);
             }
             y += 18;
             if (clicked.lengthSquared() != 0
                     && clicked.x >= 2 && clicked.x <= maxX
                     && clicked.y >= startY && clicked.y <= y) {
-                renderQueue.add(() -> {
-                    mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, shulkerInfo.slot(), 0, SlotActionType.PICKUP, mc.player);
-                });
+                mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, shulkerInfo.slot(), 0, SlotActionType.PICKUP, mc.player);
                 clicked.set(0);
             }
             context.fill(2, startY, maxX, y, ShulkerViewEntrypoint.getInstance().getConfig().getBackground());
             context.fill(2, startY - 1, maxX, startY, shulkerInfo.color());
             y += 2;
         }
-
-        while (!renderQueue.isEmpty()) renderQueue.poll().run();
 
         height = y - offset;
         clicked.set(0);

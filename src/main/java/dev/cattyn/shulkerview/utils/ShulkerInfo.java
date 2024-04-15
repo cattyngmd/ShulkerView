@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public record ShulkerInfo(String name, boolean compact, int color, int slot, List<ItemStack> stacks) {
+public record ShulkerInfo(ItemStack shulker, boolean compact, int color, int slot, List<ItemStack> stacks) {
 
     public static ShulkerInfo create(ItemStack stack, int slot) {
         if (!(stack.getItem() instanceof BlockItem) || !(((BlockItem) stack.getItem()).getBlock() instanceof ShulkerBoxBlock)) return null;
@@ -44,10 +44,8 @@ public record ShulkerInfo(String name, boolean compact, int color, int slot, Lis
             Map<Item, Integer> map = new HashMap<>();
             for (ItemStack item : items) {
                 if (item.isEmpty()) continue;
-                map.compute(item.getItem(), (k, v) -> {
-                    if (v == null) return item.getCount();
-                    return v + item.getCount();
-                });
+
+                map.put(item.getItem(), item.getCount() + map.getOrDefault(item.getItem(), 0));
             }
             items.clear();
             int k = 0;
@@ -57,13 +55,13 @@ public record ShulkerInfo(String name, boolean compact, int color, int slot, Lis
             }
         }
 
-        int color = new Color(0x9953b0, false).hashCode();
+        int color = 0xff9953b0;
         if (block.getColor() != null) {
             float[] components = block.getColor().getColorComponents();
             color = new Color(components[0], components[1], components[2]).hashCode();
         }
 
-        return new ShulkerInfo(stack.getName().getString(), compact, color, slot, items);
+        return new ShulkerInfo(stack, compact, color, slot, items);
     }
 
 }
