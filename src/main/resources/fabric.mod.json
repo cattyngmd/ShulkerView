@@ -10,7 +10,7 @@
   "contact": {
     "repo": "https://github.com/cattyn/ShulkerView"
   },
-  "license": "All-Rights-Reserved",
+  "license": "MIT",
   "environment": "client",
   "entrypoints": {
     "client": [
