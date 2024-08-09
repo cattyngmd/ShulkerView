@@ -16,7 +16,7 @@ public class UpdateHandler implements Globals {
         HandledScreen<?> screen = (HandledScreen<?>) mc.currentScreen;
         shulkerList.clear();
         for (Slot slot : screen.getScreenHandler().slots) {
-            ShulkerInfo shulkerInfo = ShulkerInfo.create(slot.getStack(), slot.id);
+            ShulkerInfo shulkerInfo = ShulkerInfo.create(slot.getStack(), slot.getIndex());
             if (shulkerInfo == null) continue;
             shulkerList.add(shulkerInfo);
         }
