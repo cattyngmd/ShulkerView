@@ -46,9 +46,6 @@ def targetJavaVersion = 21
 tasks.withType(JavaCompile).configureEach {
 
     it.options.encoding = "UTF-8"
-    if (targetJavaVersion >= 21 || JavaVersion.current().isJava10Compatible()) {
-        it.options.release.set(targetJavaVersion)
-    }
 }
 
 java {

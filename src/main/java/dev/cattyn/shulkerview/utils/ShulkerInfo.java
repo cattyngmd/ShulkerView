@@ -7,15 +7,12 @@ import net.minecraft.component.type.ContainerComponent;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
 import net.minecraft.util.collection.DefaultedList;
 
 import java.awt.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public record ShulkerInfo(ItemStack shulker, boolean compact, int color, int slot, List<ItemStack> stacks) {
@@ -51,7 +48,6 @@ public record ShulkerInfo(ItemStack shulker, boolean compact, int color, int slo
             int[] col = RGBIntToRGB(block.getColor().getSignColor());
             color = new Color(col[0], col[1], col[2]).hashCode();
         }
-
         return new ShulkerInfo(stack, compact, color, slot, items);
     }
 
