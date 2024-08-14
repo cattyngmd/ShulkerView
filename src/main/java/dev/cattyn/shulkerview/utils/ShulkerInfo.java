@@ -1,13 +1,18 @@
 package dev.cattyn.shulkerview.utils;
 
 import dev.cattyn.shulkerview.ShulkerViewEntrypoint;
+import net.minecraft.block.MapColor;
 import net.minecraft.block.ShulkerBoxBlock;
+import net.minecraft.component.ComponentType;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ContainerComponent;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.math.ColorHelper;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -21,47 +26,51 @@ public record ShulkerInfo(ItemStack shulker, boolean compact, int color, int slo
         ShulkerBoxBlock block = (ShulkerBoxBlock) ((BlockItem) stack.getItem()).getBlock();
         List<ItemStack> items = DefaultedList.ofSize(27, ItemStack.EMPTY);
 
-        NbtCompound nbt = stack.getOrCreateNbt().contains("BlockEntityTag", 10)
-                ? stack.getNbt().getCompound("BlockEntityTag") : stack.getNbt();
+        ContainerComponent component = stack.getComponents().get(DataComponentTypes.CONTAINER);
 
         boolean compact = ShulkerViewEntrypoint.getInstance().getConfig().isCompact();
 
-        if (nbt.contains("Items", 9)) {
+        if (component != null) {
             Item unstackable = null;
-            NbtList nbt2 = nbt.getList("Items", 10);
-            for (int i = 0; i < nbt2.size(); i++) {
-                int slot2 = nbt2.getCompound(i).contains("Slot", 99) ? nbt2.getCompound(i).getByte("Slot") : i;
-                ItemStack item = ItemStack.fromNbt(nbt2.getCompound(i));
-                items.set(slot2, item);
+
+            List<ItemStack> list = component.stream().toList();
+            for (int i = 0; i < list.size(); i++) {
+                ItemStack item = list.get(i);
+                items.set(i, item);
                 if (item.getMaxCount() == 1) {
                     if (unstackable != null && !item.getItem().equals(unstackable)) compact = false;
                     unstackable = item.getItem();
                 }
             }
+
         }
 
         if (compact) {
-            Map<Item, Integer> map = new HashMap<>();
-            for (ItemStack item : items) {
-                if (item.isEmpty()) continue;
-
-                map.put(item.getItem(), item.getCount() + map.getOrDefault(item.getItem(), 0));
-            }
-            items.clear();
-            int k = 0;
-            for (Map.Entry<Item, Integer> entry : map.entrySet()) {
-                items.set(k, new ItemStack(entry.getKey(), entry.getValue()));
-                k++;
-            }
+            shrinkToCompact(items);
         }
 
         int color = 0xff9953b0;
         if (block.getColor() != null) {
-            float[] components = block.getColor().getColorComponents();
-            color = new Color(components[0], components[1], components[2]).hashCode();
+            color = ColorHelper.Argb.withAlpha(255, block.getColor().getMapColor().color);
         }
 
         return new ShulkerInfo(stack, compact, color, slot, items);
+    }
+
+    private static void shrinkToCompact(List<ItemStack> items) {
+        Map<Item, Integer> map = new HashMap<>();
+        for (ItemStack item : items) {
+            if (item.isEmpty()) continue;
+
+            int initial = map.getOrDefault(item.getItem(), 0);
+            map.put(item.getItem(), item.getCount() + initial);
+        }
+        items.clear();
+        int k = 0;
+        for (Map.Entry<Item, Integer> entry : map.entrySet()) {
+            items.set(k, new ItemStack(entry.getKey(), entry.getValue()));
+            k++;
+        }
     }
 
 }
