@@ -71,7 +71,7 @@ public class RenderHandler implements Globals {
         }
         int background = ShulkerViewEntrypoint.getInstance().getConfig().getBackground();
         context.fill(x, y, x + width, y + rows, background);
-        context.fill(x, y - 1, width, y, info.color());
+        context.fill(x, y - 1, x + width, y, info.color());
         currentY += rows + MARGIN;
     }
 
