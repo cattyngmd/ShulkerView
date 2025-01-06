@@ -108,6 +108,7 @@ public class RenderHandler implements Globals {
                 if (s.isEmpty()) break;
                 size++;
             }
+            size = Math.max(1, size);
         }
 
         rows = (int) Math.ceil(size / 9f);
