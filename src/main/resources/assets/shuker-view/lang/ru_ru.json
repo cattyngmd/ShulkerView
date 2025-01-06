@@ -1,6 +1,7 @@
 {
   "text.autoconfig.shulker-view.title": "Shulker View",
   "text.autoconfig.shulker-view.option.compact": "Компактный Режим",
+  "text.autoconfig.shulker-view.option.bothSides": "Распределить По Сторонам",
   "text.autoconfig.shulker-view.option.background": "Цвет Заднего Фона",
   "modmenu.descriptionTranslation.shulker-view": "Мод который улучшает управление шалкерами."
 }
