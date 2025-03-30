@@ -51,7 +51,7 @@ public record ShulkerInfo(ItemStack shulker, boolean compact, int color, int slo
 
         int color = 0xff9953b0;
         if (block.getColor() != null) {
-            color = ColorHelper.Argb.withAlpha(255, block.getColor().getMapColor().color);
+            color = ColorHelper.withAlpha(255, block.getColor().getMapColor().color);
         }
 
         return new ShulkerInfo(stack, compact, color, slot, items);

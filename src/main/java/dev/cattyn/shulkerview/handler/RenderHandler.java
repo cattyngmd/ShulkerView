@@ -53,25 +53,28 @@ public class RenderHandler implements Globals {
         int x = startX;
         int y = currentY;
         int count = 0;
-        for (ItemStack stack : info.stacks()) {
-            if (info.compact() && stack.isEmpty()) break;
-            int column = x + (count % 9) * GRID_WIDTH + MARGIN;
-            int row = y + count / 9 * GRID_HEIGHT + MARGIN;
-            drawStack(context, stack, column, row);
-            count++;
-        }
 
-        if (count == 0 && info.compact()) {
-            context.drawItem(info.shulker(), x + MARGIN, currentY + MARGIN);
+        if (currentY < context.getScaledWindowHeight()) {
+            for (ItemStack stack : info.stacks()) {
+                if (info.compact() && stack.isEmpty()) break;
+                int column = x + (count % 9) * GRID_WIDTH + MARGIN;
+                int row = y + count / 9 * GRID_HEIGHT + MARGIN;
+                drawStack(context, stack, column, row);
+                count++;
+            }
+
+            if (count == 0 && info.compact()) {
+                context.drawItem(info.shulker(), x + MARGIN, currentY + MARGIN);
+            }
+            if (clicked.lengthSquared() != 0 && isHovered(clicked.x, clicked.y, width, rows)) {
+                int id = mc.player.currentScreenHandler.syncId;
+                mc.interactionManager.clickSlot(id, info.slot(), 0, SlotActionType.PICKUP, mc.player);
+                clicked.set(0);
+            }
+            int background = ShulkerViewEntrypoint.getInstance().getConfig().getBackground();
+            context.fill(x, y, x + width, y + rows, background);
+            context.fill(x, y - 1, x + width, y, info.color());
         }
-        if (clicked.lengthSquared() != 0 && isHovered(clicked.x, clicked.y, width, rows)) {
-            int id = mc.player.currentScreenHandler.syncId;
-            mc.interactionManager.clickSlot(id, info.slot(), 0, SlotActionType.PICKUP, mc.player);
-            clicked.set(0);
-        }
-        int background = ShulkerViewEntrypoint.getInstance().getConfig().getBackground();
-        context.fill(x, y, x + width, y + rows, background);
-        context.fill(x, y - 1, x + width, y, info.color());
         currentY += rows + MARGIN;
     }
 
@@ -93,9 +96,9 @@ public class RenderHandler implements Globals {
         ctx.drawItem(stack, x, y);
         if (stack.getCount() > 999) {
             String text = "%.1fk".formatted(stack.getCount() / 1000f);
-            ctx.drawItemInSlot(mc.textRenderer, stack, x, y, text);
+            ctx.drawStackOverlay(mc.textRenderer, stack, x, y, text);
         } else {
-            ctx.drawItemInSlot(mc.textRenderer, stack, x, y);
+            ctx.drawStackOverlay(mc.textRenderer, stack, x, y);
         }
     }
 
