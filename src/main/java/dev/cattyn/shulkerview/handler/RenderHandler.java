@@ -27,25 +27,30 @@ public class RenderHandler implements Globals {
         startX = MARGIN;
         currentY = usesBoth() ? MARGIN : MARGIN + offset;
 
+        context.getMatrices().push();
+        context.getMatrices().scale(scale(), scale(), 1);
         for (ShulkerInfo shulkerInfo : ShulkerViewEntrypoint.getInstance().getUpdateHandler().getShulkerList()) {
             updateShulkerInfo(shulkerInfo);
 
-            if (currentY >= context.getScaledWindowHeight() && usesBoth() && !right) {
+            if (currentY >= context.getScaledWindowHeight() / scale() && usesBoth() && !right) {
                 right = true;
                 currentY = MARGIN + offset;
             }
 
             if (right) {
-                startX = context.getScaledWindowWidth() - cols * GRID_WIDTH - MARGIN;
+                float scaledGridWidth = GRID_WIDTH * scale();
+                startX = (int) ((context.getScaledWindowWidth() - cols * scaledGridWidth - MARGIN) / scale());
             }
-            handleShulkerInfo(context, shulkerInfo);
+            drawShulkerInfo(context, shulkerInfo);
         }
+        context.draw();
+        context.getMatrices().pop();
 
         height = currentY - offset;
         clicked.set(0);
     }
 
-    private void handleShulkerInfo(DrawContext context, ShulkerInfo info) {
+    private void drawShulkerInfo(DrawContext context, ShulkerInfo info) {
         int cols = this.cols * GRID_HEIGHT;
         int rows = this.rows * GRID_WIDTH;
         int width = cols + MARGIN * this.cols;
@@ -54,7 +59,7 @@ public class RenderHandler implements Globals {
         int y = currentY;
         int count = 0;
 
-        if (currentY < context.getScaledWindowHeight()) {
+        if (currentY * scale() < context.getScaledWindowHeight()) {
             for (ItemStack stack : info.stacks()) {
                 if (info.compact() && stack.isEmpty()) break;
                 int column = x + (count % 9) * GRID_WIDTH + MARGIN;
@@ -85,10 +90,13 @@ public class RenderHandler implements Globals {
 
     public void mouseScroll(double x, double y, double amount) {
         if (amount == 0) return;
-        this.offset = MathHelper.clamp((int) (offset + Math.ceil(amount) * 10), -height + mc.getWindow().getScaledHeight(), 0);
+        float f = Math.min(-height + mc.getWindow().getScaledHeight() / scale(), 0);
+        this.offset = (int) MathHelper.clamp(offset + Math.ceil(amount) * 10, f,0);
     }
 
     private boolean isHovered(double x, double y, float cols, float rows) {
+        x /= scale();
+        y /= scale();
         return x >= startX && x <= startX + cols && y >= currentY && y <= currentY + rows;
     }
 
@@ -120,5 +128,9 @@ public class RenderHandler implements Globals {
 
     private boolean usesBoth() {
         return ShulkerViewEntrypoint.getInstance().getConfig().isBothSides();
+    }
+
+    private float scale() {
+        return ShulkerViewEntrypoint.getInstance().getConfig().getScale();
     }
 }
