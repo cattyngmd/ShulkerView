@@ -3,5 +3,6 @@
   "text.autoconfig.shulker-view.option.compact": "Compact Layout",
   "text.autoconfig.shulker-view.option.bothSides": "Use Both Sides",
   "text.autoconfig.shulker-view.option.background": "Background Color",
+  "text.autoconfig.shulker-view.option.scale": "Layout Scale",
   "modmenu.descriptionTranslation.shulker-view": "Mod that improves shulker management."
 }
