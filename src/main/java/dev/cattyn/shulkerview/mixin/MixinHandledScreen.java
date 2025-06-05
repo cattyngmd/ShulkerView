@@ -33,8 +33,8 @@ public class MixinHandledScreen extends Screen {
         ShulkerViewEntrypoint.getInstance().getRenderHandler().mouseClick(mouseX, mouseY, button);
     }
 
-    @Override public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+    @Inject(method = "mouseScrolled", at = @At("HEAD"))
+    private void mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount, CallbackInfoReturnable<Boolean> cir) {
         ShulkerViewEntrypoint.getInstance().getRenderHandler().mouseScroll(mouseX, mouseY, verticalAmount);
-        return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
     }
 }
