@@ -2,9 +2,12 @@ package dev.cattyn.shulkerview.handler;
 
 import dev.cattyn.shulkerview.Globals;
 import dev.cattyn.shulkerview.ShulkerViewEntrypoint;
+import dev.cattyn.shulkerview.mixin.DuckHandledScreen;
 import dev.cattyn.shulkerview.utils.ShulkerInfo;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.math.MathHelper;
 import org.joml.Math;
@@ -90,6 +93,12 @@ public class RenderHandler implements Globals {
 
     public void mouseScroll(double x, double y, double amount) {
         if (amount == 0) return;
+        if (mc.currentScreen instanceof DuckHandledScreen screen) {
+            Slot slot = screen.shulker_view$getFocused();
+            if (slot != null && slot.getStack().isOf(Items.BUNDLE))
+                return;
+        }
+
         float f = Math.min(-height + mc.getWindow().getScaledHeight() / scale(), 0);
         this.offset = (int) MathHelper.clamp(offset + Math.ceil(amount) * 10, f,0);
     }
